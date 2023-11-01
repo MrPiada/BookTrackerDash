@@ -3,13 +3,28 @@ import pandas as pd
 from openpyxl import load_workbook
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import plotly.io as pio
 import dash
 from dash import dcc
 from dash import html
-from dash_table import DataTable
-from dash.dependencies import Input, Output
+
+import dash_bootstrap_components as dbc
+
+SIDEBAR_STYLE = {
+    "position": "fixed",
+    "top": 0,
+    "left": 0,
+    "bottom": 0,
+    "width": "16rem",
+    "padding": "2rem 1rem",
+    "background-color": "#f8f9fa",
+}
+
+CONTENT_STYLE = {
+    "margin-left": "18rem",
+    "margin-right": "2rem",
+    "padding": "2rem 1rem",
+}
 
 pio.templates.default = "gridon"
 
@@ -42,7 +57,7 @@ reading_gantt = px.timeline(df_copy[df_copy['Start'].notna()],
                             x_end='End',
                             y='Title',
                             color='Category',
-                            hover_data=['Authors',
+                            hover_data=['Author',
                                         'Type',
                                         'Sub-Category',
                                         'Language',
@@ -90,10 +105,14 @@ evaluations_treemap.update_traces(marker=dict(line=dict(width=0)))
 
 
 # Crea un'applicazione Dash
-app = dash.Dash(__name__, title='Summary')
+app = dash.Dash(
+    __name__,
+    external_stylesheets=[
+        dbc.themes.SKETCHY],
+    title='Book tracker')
 
 app.layout = html.Div([
-    dcc.Tabs([
+    dbc.Tabs([
         dcc.Tab(label='Overview',
                 children=[
                     html.Div([
